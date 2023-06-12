@@ -28,7 +28,6 @@ public class GameSnake extends JFrame {
     Food food;                       // declare a food object
     //Poison poison;                   // declare a poison object
 
-
     public GameSnake(){
         setTitle(TITLE_OF_PROGRAM);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -51,5 +50,50 @@ public class GameSnake extends JFrame {
         setResizable(false);
         setVisible(true);
     }
-    public void game(){}
+
+    public void game() {
+        snake = new Snake(
+                START_SNAKE_X,
+                START_SNAKE_Y,
+                START_SNAKE_SIZE,
+                KEY_RIGHT);
+
+        food = new Food(snake);
+        snake.setFood(food);
+
+        while(!gameOver){
+            snake.move();
+            if(snake.size() > snakeSize){
+                snakeSize = snake.size();
+                setTitle(TITLE_OF_PROGRAM + ":" + snakeSize);
+            }
+
+            if(food.isEaten()){
+                food.appear();
+            }
+            canvas.repaint();
+            sleep(SNAKE_DELAY);
+        }
+    }
+
+    private void sleep(long ms) {    // method for suspending
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class Canvas extends JPanel {    // class for rendering (drawing)
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+            Graphics2D g2D = (Graphics2D) g;
+            g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+            snake.paint(g2D);
+            food.paint(g2D);
+            //poison.paint(g2D);
+        }
+    }
 }
